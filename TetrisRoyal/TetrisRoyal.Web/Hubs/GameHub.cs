@@ -22,6 +22,39 @@ namespace TetrisRoyal.Web.Hubs
         }
 
 
+        public async Task RequestGamesList()
+        {
+            var games = _database.Set<Game>().AsNoTracking().AsQueryable().Select(game => new
+            {
+               Id = game.Id,
+               HostId = game.HostId,
+               HostName = game.Host.Username
+            });
+            await Clients.Client(Context.ConnectionId)
+                .ReceiveGames(games);
+        }
+
+        public async Task JoinGame(Guid gameId)
+        {
+            var game = await _database.Set<Game>().FindAsync(gameId);
+
+            if(game != null && String.IsNullOrEmpty(game.ChallengerId))
+            {
+                var player = await _database.Set<Player>().FindAsync(Context.ConnectionId);
+
+                game.ChallengerId = player.ConnectionId;
+
+                _database.Edit(game);
+
+                await _database.SaveChangesAsync();
+
+                await Clients.All.GameStarted(game.Id);
+
+                await Clients.Clients(new List<string> { game.HostId, game.ChallengerId }).StartGame(game.Id);
+            }
+        }
+
+
         public async Task CreateGame()
         {
             var player = await _database.Set<Player>().FindAsync(Context.ConnectionId);
@@ -44,6 +77,8 @@ namespace TetrisRoyal.Web.Hubs
             });
         }
 
+
+
         public async Task Login(string username)
         {
             var existing = _database.Set<Player>().FirstOrDefault(player => player.Username == username);
@@ -59,7 +94,7 @@ namespace TetrisRoyal.Web.Hubs
 
                 player.Username = username;
 
-                _database.Entry(player).State = EntityState.Modified;
+                _database.Edit(player);
 
                 await _database.SaveChangesAsync();
 
@@ -88,19 +123,25 @@ namespace TetrisRoyal.Web.Hubs
             foreach (var game in _database.Set<Game>().Where(g => g.HostId == player.ConnectionId))
             {
                 _database.Set<Game>().Remove(game);
-                await Clients.Client(game.ChallengerId).PlayerQuit(new
+                if (!String.IsNullOrEmpty(game.ChallengerId))
                 {
-                    GameId = game.Id
-                });
+                    await Clients.Client(game.ChallengerId).PlayerQuit(new
+                    {
+                        GameId = game.Id
+                    });
+                }
             }
 
             foreach (var game in _database.Set<Game>().Where(g => g.ChallengerId == player.ConnectionId))
             {
-                _database.Set<Game>().Remove(game);
-                await Clients.Client(game.HostId).PlayerQuit(new
+                if (!String.IsNullOrEmpty(game.HostId))
                 {
-                    GameId = game.Id
-                });
+                    _database.Set<Game>().Remove(game);
+                    await Clients.Client(game.HostId).PlayerQuit(new
+                    {
+                        GameId = game.Id
+                    });
+                }
             }
 
             _database.Set<Player>().Remove(player);

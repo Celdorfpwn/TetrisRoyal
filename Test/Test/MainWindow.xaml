@@ -7,8 +7,41 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button x:Name="button" Content="Login" HorizontalAlignment="Left" Margin="226,202,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="209,153,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Row="0" Grid.Column="0" x:Name="usernameTextBox" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="Celdorfpwn" VerticalAlignment="Center" Width="120"/>
+            <Button Grid.Row="0" Grid.Column="1" x:Name="loginButton" Content="Login" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" Click="button_Click"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" x:Name="createGameButton" Content="Create" IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Click="createGameButton_Click"/>
+            <ListView Grid.Row="1" x:Name="gamesListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:Game}">
+                        <WrapPanel>
+                            <TextBlock Text="Host: " />
+                            <TextBlock Text="{Binding HostName}" FontWeight="Bold" />
+                            <Button x:Name="joinButton" Content="Join" Click="joinButton_Click"></Button>
+                            <TextBlock Text="GameId: " />
+                            <TextBlock Text="{Binding Id}" FontWeight="Bold" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+       
     </Grid>
 </Window>

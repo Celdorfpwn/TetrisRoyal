@@ -12,6 +12,10 @@ namespace TetrisRoyal.Web.Data
         public GameMap()
         {
             HasKey(game => game.Id);
+
+            HasRequired(game => game.Host).WithMany().HasForeignKey(game => game.HostId);
+
+            HasOptional(game => game.Challenger).WithMany().HasForeignKey(game => game.ChallengerId);
         }
     }
 }

@@ -11,6 +11,10 @@ namespace TetrisRoyal.Web.Models
 
         public string HostId { get; set; }
 
+        public virtual Player Host { get; set; }
+
         public string ChallengerId { get; set; }
+
+        public virtual Player Challenger { get; set; }
     }
 }

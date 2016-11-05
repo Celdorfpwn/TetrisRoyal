@@ -149,13 +149,18 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\DatabaseContext.cs" />
+    <Compile Include="Data\TetrisDatabaseContext.cs" />
+    <Compile Include="Data\DatabaseContextExtensions.cs" />
     <Compile Include="Data\GameMap.cs" />
     <Compile Include="Data\PlayerMap.cs" />
     <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Migrations\201611051201419_First.cs" />
     <Compile Include="Migrations\201611051201419_First.Designer.cs">
       <DependentUpon>201611051201419_First.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611051349504_Improvments.cs" />
+    <Compile Include="Migrations\201611051349504_Improvments.Designer.cs">
+      <DependentUpon>201611051349504_Improvments.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Game.cs" />
@@ -192,6 +197,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201611051201419_First.resx">
       <DependentUpon>201611051201419_First.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611051349504_Improvments.resx">
+      <DependentUpon>201611051349504_Improvments.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
