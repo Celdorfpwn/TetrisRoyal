@@ -13,5 +13,7 @@ namespace Test
         public string HostId { get; set; }
 
         public string HostName { get; set; }
+
+        public bool CanJoin { get; set; }
     }
 }

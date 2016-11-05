@@ -62,6 +62,7 @@ namespace Test
                  {
                      foreach (var game in result)
                      {
+                         game.CanJoin = !(game.HostId == _hub.ConnectionId);
                          _games.Add(game);
                      }
                  });
@@ -71,6 +72,7 @@ namespace Test
             {
                 Dispatcher.Invoke(() =>
                 {
+                    game.CanJoin = !(game.HostId == _hub.ConnectionId);
                     _games.Add(game);
                 });
             });
@@ -91,6 +93,18 @@ namespace Test
                      }
                  });
              });
+
+            _proxy.On("RemoveGame", (Guid gameId) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    var game = _games.FirstOrDefault(g => g.Id == gameId);
+                    if (game != null)
+                    {
+                        _games.Remove(game);
+                    }
+                });
+            });
 
             _proxy.On("StartGame", (Guid gameId) =>
              {

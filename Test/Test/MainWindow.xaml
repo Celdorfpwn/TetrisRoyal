@@ -34,7 +34,7 @@
                         <WrapPanel>
                             <TextBlock Text="Host: " />
                             <TextBlock Text="{Binding HostName}" FontWeight="Bold" />
-                            <Button x:Name="joinButton" Content="Join" Click="joinButton_Click"></Button>
+                            <Button x:Name="joinButton" Content="Join" Click="joinButton_Click" IsEnabled="{Binding CanJoin}"></Button>
                             <TextBlock Text="GameId: " />
                             <TextBlock Text="{Binding Id}" FontWeight="Bold" />
                         </WrapPanel>

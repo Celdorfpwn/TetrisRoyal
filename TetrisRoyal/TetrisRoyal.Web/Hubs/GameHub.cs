@@ -123,6 +123,7 @@ namespace TetrisRoyal.Web.Hubs
             foreach (var game in _database.Set<Game>().Where(g => g.HostId == player.ConnectionId))
             {
                 _database.Set<Game>().Remove(game);
+                await Clients.All.RemoveGame(game.Id);
                 if (!String.IsNullOrEmpty(game.ChallengerId))
                 {
                     await Clients.Client(game.ChallengerId).PlayerQuit(new
@@ -136,6 +137,7 @@ namespace TetrisRoyal.Web.Hubs
             {
                 if (!String.IsNullOrEmpty(game.HostId))
                 {
+                    await Clients.All.RemoveGame(game.Id);
                     _database.Set<Game>().Remove(game);
                     await Clients.Client(game.HostId).PlayerQuit(new
                     {
