@@ -33,6 +33,8 @@ namespace Test
 
         ObservableCollection<Game> _games = new ObservableCollection<Game>();
 
+        Game _currentGame;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -41,18 +43,18 @@ namespace Test
 
             _proxy = _hub.CreateHubProxy("game");
 
-            _proxy.On("Login",async () =>
-            {
-                MessageBox.Show("Login");
+            _proxy.On("Login", async () =>
+             {
+                 MessageBox.Show("Login");
 
-                await _proxy.Invoke("RequestGamesList");
+                 await _proxy.Invoke("RequestGamesList");
 
-                Dispatcher.Invoke(() =>
-                {
-                    loginButton.IsEnabled = false;
-                    createGameButton.IsEnabled = true;
-                });
-            });
+                 Dispatcher.Invoke(() =>
+                 {
+                     loginButton.IsEnabled = false;
+                     createGameButton.IsEnabled = true;
+                 });
+             });
 
             _proxy.On("ReceiveGames", (IEnumerable<Game> result) =>
              {
@@ -83,10 +85,20 @@ namespace Test
                  Dispatcher.Invoke(() =>
                  {
                      var game = _games.FirstOrDefault(g => g.Id == gameId);
-                     if(game != null)
+                     if (game != null)
                      {
                          _games.Remove(game);
                      }
+                 });
+             });
+
+            _proxy.On("StartGame", (Guid gameId) =>
+             {
+                 Dispatcher.Invoke(() =>
+                 {
+                     _currentGame = _games.FirstOrDefault(g => g.Id == gameId);
+                     MessageBox.Show("game started " + _currentGame.Id);
+                     _games.Remove(_currentGame);
                  });
              });
 
@@ -109,7 +121,7 @@ namespace Test
 
         protected override void OnClosed(EventArgs e)
         {
-            if(_hub.ConnectionId != null)
+            if (_hub.ConnectionId != null)
             {
                 _hub.Stop();
             }

@@ -48,7 +48,7 @@ namespace TetrisRoyal.Web.Hubs
 
                 await _database.SaveChangesAsync();
 
-                await Clients.All.GameStarted(game.Id);
+                await Clients.AllExcept(game.HostId, game.ChallengerId).GameStarted(game.Id);
 
                 await Clients.Clients(new List<string> { game.HostId, game.ChallengerId }).StartGame(game.Id);
             }
